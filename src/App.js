@@ -1,11 +1,11 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import OverallLayout from './layouts/OverallLayout';
 import { AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login'; // Import your Login component
-import ProtectedRoute from './components/ProtectedRoute'; // You'll need to create this
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -31,6 +31,16 @@ const theme = createTheme({
   },
 });
 
+const ProtectedLayout = () => {
+  return (
+    <ProtectedRoute>
+      <OverallLayout>
+        <Outlet /> {/* This is where child routes will render */}
+      </OverallLayout>
+    </ProtectedRoute>
+  );
+};
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -38,21 +48,16 @@ function App() {
       <Router>
         <AuthProvider>
           <Routes>
-            {/* Login page without layout */}
+            {/* Public route - login as index page */}
             <Route path="/" element={<Login />} />
             
-            {/* All protected routes with layout */}
-            <Route element={
-              <OverallLayout>
-                {/* <ProtectedRoute /> */}
-              </OverallLayout>
-            }>
-              {/* <Route path="/" element={<Dashboard />} /> */}
+            {/* Protected routes */}
+            <Route element={<ProtectedLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              {/* Add more protected routes as needed */}
-              {/* <Route path="/users" element={<Users />} /> */}
-              {/* <Route path="/settings" element={<Settings />} /> */}
             </Route>
+            
+            {/* Redirect any unmatched paths */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <ToastContainer
             position="top-right"
