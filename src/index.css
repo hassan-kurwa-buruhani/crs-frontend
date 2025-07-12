@@ -1,0 +1,115 @@
+/* /* body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+} */
+
+
+/* index.css */
+
+/* :root {
+  --primary: #4e73df;
+  --primary-light: #f0f3ff;
+  --secondary: #858796;
+  --success: #1cc88a;
+  --danger: #e74a3b;
+  --warning: #f6c23e;
+  --dark: #343a40;
+  --light: #f8f9fc;
+  --white: #fff;
+  --sidebar-width: 250px;
+  --sidebar-collapsed: 60px;
+  --transition-speed: 0.3s;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--light);
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background 0.2s;
+  color: var(--white);
+}
+
+.btn-primary { background: var(--primary); }
+.btn-primary:hover { background: #3658c7; }
+
+.btn-success { background: var(--success); }
+.btn-danger { background: var(--danger); }
+.btn-warning { background: var(--warning); color: var(--dark); }
+
+
+.form {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.custom-table th, .custom-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.custom-table th {
+  background: var(--primary-light);
+  color: var(--dark);
+}  */
