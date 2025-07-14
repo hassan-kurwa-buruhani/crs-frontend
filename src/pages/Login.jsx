@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, Card, CardContent, useTheme } from '@mui/material';
 
 const Login = () => {
+  const theme = useTheme();
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -15,15 +16,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const success = await login(credentials);
       if (!success) {
-        // Error handling is now done in AuthContext, so we don't need to set error state here
+        // error handled in AuthContext
       }
     } catch (error) {
       console.error('Login error:', error);
-      // Any unexpected errors will be caught here
     } finally {
       setIsSubmitting(false);
     }
@@ -31,46 +31,67 @@ const Login = () => {
 
   return (
     <Box
-      component="form"
-      onSubmit={handleSubmit}
       sx={{
+        minHeight: '100vh',
+        backgroundColor: theme.palette.background.default,
         display: 'flex',
-        flexDirection: 'column',
-        maxWidth: 400,
-        mx: 'auto',
-        mt: 8,
-        gap: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
       }}
     >
-      <Typography variant="h4" component="h1" gutterBottom>
-        Login
-      </Typography>
-      <TextField
-        label="Username"
-        type="text"
-        required
-        value={credentials.username}
-        onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-        disabled={isSubmitting}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        label="Password"
-        type="password"
-        required
-        value={credentials.password}
-        onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-        disabled={isSubmitting}
-        sx={{ mb: 2 }}
-      />
-      <Button 
-        type="submit" 
-        variant="contained" 
-        size="large"
-        disabled={isSubmitting}
+      <Card
+        sx={{
+          maxWidth: 400,
+          width: '100%',
+          borderRadius: 2,
+          boxShadow: theme.shadows[3],
+        }}
       >
-        {isSubmitting ? 'Logging in...' : 'Login'}
-      </Button>
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h5" component="h1" gutterBottom sx={{ fontWeight: 600, textAlign: 'center' }}>
+            Log in to your account
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}
+          >
+            <TextField
+              label="Username"
+              type="text"
+              required
+              value={credentials.username}
+              onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+              disabled={isSubmitting}
+              fullWidth
+            />
+            <TextField
+              label="Password"
+              type="password"
+              required
+              value={credentials.password}
+              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              disabled={isSubmitting}
+              fullWidth
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={isSubmitting}
+              sx={{
+                borderRadius: 1,
+                textTransform: 'none',
+                fontWeight: 'bold',
+              }}
+              fullWidth
+            >
+              {isSubmitting ? 'Logging in...' : 'Login'}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 };

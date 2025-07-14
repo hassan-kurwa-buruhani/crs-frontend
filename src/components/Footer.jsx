@@ -8,11 +8,11 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        py: 3,
-        px: 2,
+        py: 1,
+        px: 0.5,
         mt: 'auto',
         backgroundColor: theme.palette.background.paper,
-        borderTop: `1px solid ${theme.palette.divider}`,
+        borderTop: `0.5px solid ${theme.palette.divider}`,
       }}
     >
       <Typography variant="body2" color="text.secondary" align="center">

@@ -11,6 +11,20 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  // Helper function to get dashboard path based on role
+  const getDashboardPath = (role) => {
+    switch(role) {
+      case 'Doctor':
+        return '/doctor-dashboard';
+      case 'Sheha':
+        return '/sheha-dashboard';
+      case 'HealthSupervisor':
+        return '/supervisor-dashboard';
+      default:
+        return '/dashboard';
+    }
+  };
+
   // Initialize auth state from localStorage
   useEffect(() => {
     const initializeAuth = async () => {
@@ -18,9 +32,16 @@ export const AuthProvider = ({ children }) => {
       const userData = localStorage.getItem('user');
 
       if (token && userData) {
+        const parsedUser = JSON.parse(userData);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        setUser(JSON.parse(userData));
-        toast.success(`Welcome back, ${JSON.parse(userData).first_name || 'User'}!`, {
+        setUser(parsedUser);
+        
+        // Redirect to role-specific dashboard if accessing root
+        if (window.location.pathname === '/') {
+          navigate(getDashboardPath(parsedUser.role));
+        }
+        
+        toast.success(`Welcome back, ${parsedUser.first_name || 'User'}!`, {
           position: "top-right",
           autoClose: 3000,
         });
@@ -29,27 +50,28 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [navigate]);
 
   // Login function
   const login = async (credentials) => {
     try {
       const response = await axios.post(`${apiUrl}login/`, credentials);
-      const { access, refresh, first_name, ...userData } = response.data;
+      const { access, refresh, first_name, role, ...userData } = response.data;
 
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
-      localStorage.setItem('user', JSON.stringify({ first_name, ...userData }));
+      localStorage.setItem('user', JSON.stringify({ first_name, role, ...userData }));
 
       axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      setUser({ first_name, ...userData });
+      setUser({ first_name, role, ...userData });
       
       toast.success(`Welcome, ${first_name || 'User'}!`, {
         position: "top-right",
         autoClose: 3000,
       });
       
-      navigate('/dashboard');
+      // Redirect to role-specific dashboard
+      navigate(getDashboardPath(role));
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -161,7 +183,7 @@ export const AuthProvider = ({ children }) => {
       axios.interceptors.request.eject(requestInterceptor);
       axios.interceptors.response.eject(responseInterceptor);
     };
-  }, []);
+  }, [logout]);
 
   const value = {
     user,
@@ -170,6 +192,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshToken,
     isAuthenticated: !!user,
+    userRole: user?.role, // Expose user role for components
   };
 
   return (

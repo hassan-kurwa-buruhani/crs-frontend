@@ -86,7 +86,7 @@ const Header = ({ toggleSidebar, sidebarOpen, toggleTheme, themeMode }) => {
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
         boxShadow: 'none',
-        borderBottom: `1px solid ${theme.palette.divider}`,
+        borderBottom: `0.4px solid ${theme.palette.divider}`,
       }}
     >
       <Toolbar>
@@ -100,7 +100,7 @@ const Header = ({ toggleSidebar, sidebarOpen, toggleTheme, themeMode }) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          My Dashboard
+          Dashboard
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton color="inherit">

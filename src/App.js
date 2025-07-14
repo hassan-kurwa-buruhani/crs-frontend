@@ -3,8 +3,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import OverallLayout from './layouts/OverallLayout';
 import { AuthProvider } from './context/AuthContext';
-import Dashboard from './pages/Dashboard';
+// import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import DoctorDashboard from './pages/DoctorDashboard';
+import ShehaDashboard from './pages/ShehaDashboard';
+import HealthSupervisorDashboard from './pages/HealthsupervisorDashboard';
+import UpdatePatient from './pages/UpdatePatient';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -53,7 +57,11 @@ function App() {
             
             {/* Protected routes */}
             <Route element={<ProtectedLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+              <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+              <Route path="/sheha-dashboard" element={<ShehaDashboard />} />
+              <Route path="/supervisor-dashboard" element={<HealthSupervisorDashboard />} />
+              <Route path="/patients/:id/update" element={<UpdatePatient />} />
             </Route>
             
             {/* Redirect any unmatched paths */}

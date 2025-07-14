@@ -19,6 +19,7 @@ import {
   Layers as LayersIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../context/AuthContext';
 
 // Styled component for active menu items
 const StyledListItemButton = styled(ListItemButton)(({ theme, active }) => ({
@@ -34,16 +35,43 @@ const StyledListItemButton = styled(ListItemButton)(({ theme, active }) => ({
 const Sidebar = ({ open, onClose }) => {
   const theme = useTheme();
   const location = useLocation();
+  const { user } = useAuth();
   const drawerWidth = 240;
+
+  // Get dashboard path based on user role
+  const getDashboardPath = () => {
+    switch(user?.role) {
+      case 'Doctor': return '/doctor-dashboard';
+      case 'Sheha': return '/sheha-dashboard';
+      case 'Health Supervisor': return '/supervisor-dashboard';
+      default: return '/dashboard';
+    }
+  };
 
   // Menu items with paths
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+    { 
+      text: 'Dashboard', 
+      icon: <DashboardIcon />, 
+      path: getDashboardPath() // Dynamic dashboard path
+    },
     { text: 'Users', icon: <PeopleIcon />, path: '/users' },
     { text: 'Reports', icon: <BarChartIcon />, path: '/reports' },
     { text: 'Integrations', icon: <LayersIcon />, path: '/integrations' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
   ];
+
+  // Check if current location matches any dashboard path
+  const isDashboardActive = (path) => {
+    const dashboardPaths = [
+      '/dashboard',
+      '/doctor-dashboard',
+      '/sheha-dashboard',
+      '/supervisor-dashboard'
+    ];
+    return dashboardPaths.includes(path) && 
+           dashboardPaths.includes(location.pathname);
+  };
 
   return (
     <Drawer
@@ -70,8 +98,10 @@ const Sidebar = ({ open, onClose }) => {
             <StyledListItemButton
               component={Link}
               to={item.path}
-              selected={location.pathname === item.path}
-              onClick={onClose} // Close sidebar on mobile when item is clicked
+              selected={item.path === '/dashboard' 
+                ? isDashboardActive(item.path)
+                : location.pathname === item.path}
+              onClick={onClose}
               sx={{
                 '&:hover': {
                   backgroundColor: theme.palette.action.hover,

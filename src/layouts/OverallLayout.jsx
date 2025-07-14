@@ -27,7 +27,7 @@ const OverallLayout = ({ children }) => {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
             }),
-            marginLeft: sidebarOpen ? `240px` : `0px`,
+            marginLeft: sidebarOpen ? `10px` : `-200px`,
             width: `calc(100% - ${sidebarOpen ? 240 : 0}px)`,
           }}
         >
