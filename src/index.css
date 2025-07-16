@@ -113,3 +113,9 @@ button {
   background: var(--primary-light);
   color: var(--dark);
 }  */
+
+
+.custom-marker {
+  background: transparent;
+  border: none;
+}

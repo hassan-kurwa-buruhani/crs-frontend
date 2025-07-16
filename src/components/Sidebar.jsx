@@ -55,7 +55,7 @@ const Sidebar = ({ open, onClose }) => {
       icon: <DashboardIcon />, 
       path: getDashboardPath() // Dynamic dashboard path
     },
-    { text: 'Users', icon: <PeopleIcon />, path: '/users' },
+    { text: 'Cases', icon: <PeopleIcon />, path: '/cases' },
     { text: 'Reports', icon: <BarChartIcon />, path: '/reports' },
     { text: 'Integrations', icon: <LayersIcon />, path: '/integrations' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },

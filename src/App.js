@@ -9,6 +9,10 @@ import DoctorDashboard from './pages/DoctorDashboard';
 import ShehaDashboard from './pages/ShehaDashboard';
 import HealthSupervisorDashboard from './pages/HealthsupervisorDashboard';
 import UpdatePatient from './pages/UpdatePatient';
+import CaseReports from './pages/CaseReports';
+import CaseDetails from './pages/CaseDetails';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -62,6 +66,10 @@ function App() {
               <Route path="/sheha-dashboard" element={<ShehaDashboard />} />
               <Route path="/supervisor-dashboard" element={<HealthSupervisorDashboard />} />
               <Route path="/patients/:id/update" element={<UpdatePatient />} />
+              <Route path="/cases" element={<CaseReports />} />
+              <Route path="/cases/:id" element={<CaseDetails />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
             </Route>
             
             {/* Redirect any unmatched paths */}

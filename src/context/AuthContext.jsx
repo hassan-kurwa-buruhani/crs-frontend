@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -13,15 +14,23 @@ export const AuthProvider = ({ children }) => {
 
   // Helper function to get dashboard path based on role
   const getDashboardPath = (role) => {
-    switch(role) {
-      case 'Doctor':
-        return '/doctor-dashboard';
-      case 'Sheha':
-        return '/sheha-dashboard';
-      case 'HealthSupervisor':
-        return '/supervisor-dashboard';
-      default:
-        return '/dashboard';
+    const rolePaths = {
+      'Doctor': '/doctor-dashboard',
+      'Sheha': '/sheha-dashboard',
+      'HealthSupervisor': '/supervisor-dashboard',
+      'Admin': '/admin-dashboard'
+    };
+    return rolePaths[role] || '/dashboard';
+  };
+
+  // Extract user ID from JWT token
+  const getUserIdFromToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.user_id;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
     }
   };
 
@@ -32,19 +41,33 @@ export const AuthProvider = ({ children }) => {
       const userData = localStorage.getItem('user');
 
       if (token && userData) {
-        const parsedUser = JSON.parse(userData);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        setUser(parsedUser);
-        
-        // Redirect to role-specific dashboard if accessing root
-        if (window.location.pathname === '/') {
-          navigate(getDashboardPath(parsedUser.role));
+        try {
+          const parsedUser = JSON.parse(userData);
+          
+          // Verify and add ID if missing
+          if (!parsedUser.id) {
+            const userId = getUserIdFromToken(token);
+            if (userId) {
+              parsedUser.id = userId;
+              localStorage.setItem('user', JSON.stringify(parsedUser));
+            }
+          }
+
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setUser(parsedUser);
+          
+          // Redirect to role-specific dashboard if accessing root
+          if (window.location.pathname === '/') {
+            navigate(getDashboardPath(parsedUser.role));
+          }
+          
+          toast.success(`Welcome back, ${parsedUser.first_name || 'User'}!`, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        } catch (error) {
+          console.error('Error initializing auth:', error);
         }
-        
-        toast.success(`Welcome back, ${parsedUser.first_name || 'User'}!`, {
-          position: "top-right",
-          autoClose: 3000,
-        });
       }
       setLoading(false);
     };
@@ -52,25 +75,44 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, [navigate]);
 
-  // Login function
+  // Login function - modified to ensure ID is included
   const login = async (credentials) => {
     try {
       const response = await axios.post(`${apiUrl}login/`, credentials);
-      const { access, refresh, first_name, role, ...userData } = response.data;
+      const { access, refresh, first_name, role } = response.data;
 
+      // Get user ID from the access token
+      const userId = getUserIdFromToken(access);
+      if (!userId) {
+        throw new Error('User ID not found in token');
+      }
+
+      // Create complete user object
+      const userData = {
+        id: userId,
+        first_name,
+        last_name: response.data.last_name || '',
+        role,
+        email: response.data.email || '',
+        // Add any other user fields you need
+      };
+
+      // Store tokens and user data
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
-      localStorage.setItem('user', JSON.stringify({ first_name, role, ...userData }));
+      localStorage.setItem('user', JSON.stringify(userData));
 
+      // Set axios defaults
       axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      setUser({ first_name, role, ...userData });
+      setUser(userData);
       
+      // Show welcome message
       toast.success(`Welcome, ${first_name || 'User'}!`, {
         position: "top-right",
         autoClose: 3000,
       });
-      
-      // Redirect to role-specific dashboard
+
+      // Redirect to appropriate dashboard
       navigate(getDashboardPath(role));
       return true;
     } catch (error) {
@@ -82,8 +124,6 @@ export const AuthProvider = ({ children }) => {
           errorMessage = 'Invalid username or password';
         } else if (error.response.data?.detail) {
           errorMessage = error.response.data.detail;
-        } else if (error.response.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
         }
       }
       
@@ -110,7 +150,7 @@ export const AuthProvider = ({ children }) => {
       autoClose: 3000,
     });
     
-    navigate('/');
+    navigate('/login');
   };
 
   // Refresh token function
@@ -119,7 +159,7 @@ export const AuthProvider = ({ children }) => {
       const refresh = localStorage.getItem('refresh_token');
       if (!refresh) throw new Error('No refresh token');
 
-      const response = await axios.post(`${apiUrl}refresh/`, { refresh });
+      const response = await axios.post(`${apiUrl}token/refresh/`, { refresh });
       const { access } = response.data;
 
       localStorage.setItem('access_token', access);
@@ -192,7 +232,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshToken,
     isAuthenticated: !!user,
-    userRole: user?.role, // Expose user role for components
+    userRole: user?.role,
+    userId: user?.id, // Explicitly expose user ID
   };
 
   return (

@@ -23,6 +23,7 @@ const ModernTable = ({
   sortDirection,
   sortBy,
   onSort,
+  onRowClick, // ✅ Support clickable rows!
 }) => {
   const theme = useTheme();
 
@@ -36,13 +37,13 @@ const ModernTable = ({
       }}
     >
       <TableContainer>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="modern table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  align={column.align}
+                  align={column.align || 'left'}
                   style={{ minWidth: column.minWidth }}
                   sortDirection={sortBy === column.id ? sortDirection : false}
                 >
@@ -61,13 +62,21 @@ const ModernTable = ({
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
             {data.map((row, index) => (
-              <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+              <TableRow
+                hover
+                role="checkbox"
+                tabIndex={-1}
+                key={index}
+                sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                onClick={() => onRowClick && onRowClick(row)}
+              >
                 {columns.map((column) => {
                   const value = row[column.id];
                   return (
-                    <TableCell key={column.id} align={column.align}>
+                    <TableCell key={column.id} align={column.align || 'left'}>
                       {column.format ? column.format(value) : value}
                     </TableCell>
                   );
@@ -77,6 +86,7 @@ const ModernTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

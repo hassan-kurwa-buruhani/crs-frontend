@@ -20,6 +20,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 // Styled component for user info
 const UserInfo = styled(Box)(({ theme }) => ({
@@ -39,6 +40,7 @@ const Header = ({ toggleSidebar, sidebarOpen, toggleTheme, themeMode }) => {
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   // Function to get user initials
   const getInitials = () => {
@@ -64,8 +66,7 @@ const Header = ({ toggleSidebar, sidebarOpen, toggleTheme, themeMode }) => {
 
   const handleProfileClick = () => {
     handleMenuClose();
-    // Will implement profile page navigation later
-    console.log('Navigate to profile page');
+    navigate('/profile');
   };
 
   const handleLogout = () => {
@@ -100,7 +101,7 @@ const Header = ({ toggleSidebar, sidebarOpen, toggleTheme, themeMode }) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          Dashboard
+          Cholera Reporting System
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton color="inherit">
